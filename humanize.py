@@ -18,8 +18,8 @@ def currency(value):
     try:
         decval = Decimal(value)
         return locale.currency(decval, grouping=True)
-    except TypeError:
-        value
+    except ValueError:
+        return value
 
 def ordinal(value):
     """
