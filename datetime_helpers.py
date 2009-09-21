@@ -1,11 +1,14 @@
-!/usr/bin/env python
+#!/usr/bin/env python
 """
-This program contains various functions used to aid in 
-date and time-based calculations
+Various functions used to aid in date and time-based calculations
 """
-from datetime import datetime
 from time import asctime
+from datetime import datetime, timedelta
 
+def get_date_string(date_obj=datetime.today(), format="%Y-%m-%d"):
+    "Accepts a datetime object and an option parameter"
+    return datetime.strftime(date_obj, format)
+        
 def window():
     """
     This variable accounts for weekends in the efilings SQL queries. 
