@@ -23,27 +23,53 @@ def currency(value):
 
 def ordinal(value):
     """
-    Converts an integer to it's ordinal as a string.
-    For example 1 to "1st", 2 to "2nd", 3 to "3rd", etc.
+    Converts a *postivie* integer or its string representation
+    to an ordinal value.
+
+    >>> for i in range(1,13):
+    ...     ordinal(i)
+    ...     
+    u'1st'
+    u'2nd'
+    u'3rd'
+    u'4th'
+    u'5th'
+    u'6th'
+    u'7th'
+    u'8th'
+    u'9th'
+    u'10th'
+    u'11th'
+    u'12th'
+
+    >>> for i in (100, '111', '112',1011):
+    ...     ordinal(i)
+    ...     
+    u'100th'
+    u'111th'
+    u'112th'
+    u'1011th'
+
     """
     try:
         value = int(value)
     except ValueError:
         return value
 
-    if value % 100/10 <> 1:
+    if value % 100//10 != 1:
         if value % 10 == 1:
-            ord = u"%d%s" % (value, "st")
-            return ord 
+            ordval = u"%d%s" % (value, "st")
         elif value % 10 == 2:
-            ord = u"%d%s" % (value, "nd")
-            return ord
+            ordval = u"%d%s" % (value, "nd")
         elif value % 10 == 3:
-            ord = u"%d%s" % (value, "rd")
-            return ord
+            ordval = u"%d%s" % (value, "rd")
         else:
-            ord = u"%d%s" % (value, "th")
-            return ord
+            ordval = u"%d%s" % (value, "th")
     else:
-        ord = u"%d%s" % (value, "th")
-        return  ord
+        ordval = u"%d%s" % (value, "th")
+
+    return ordval
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
