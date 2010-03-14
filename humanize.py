@@ -23,7 +23,7 @@ def currency(value):
 
 def ordinal(value):
     """
-    Converts a *postivie* integer or its string representation
+    Converts a *postive* integer or its string representation
     to an ordinal value.
 
     >>> for i in range(1,13):
