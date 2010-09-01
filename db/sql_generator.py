@@ -16,7 +16,6 @@ def create_insert_sql(table, **params):
     SQL = "INSERT INTO %(table)s (%(columns)s) VALUES (%(params)s);"
     columns = ", ".join(sorted(params.keys()))
     # escape single quotes inside a quoted field
-
     clean_params = ", ".join(["'%s'" % str(field).replace("'","''") 
                               for field in sorted_dict_values(params)])
     return SQL % {'table':table, 'columns':columns, 'params':clean_params}
