@@ -5,6 +5,7 @@ Library for working with S3 buckets.
 import os
 import sys
 
+import boto
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 
@@ -14,10 +15,24 @@ def percent_cb(complete, total):
     sys.stdout.write('.')
     sys.stdout.flush()
 
-
 class S3(object):
-    """Provides a persistent connection to S3 and methods interacting with buckets."""
+    """
+    Provides a persistent connection to S3 and methods for interacting with buckets.
+    
+    USAGE:
 
+    # Set your AWS credentials
+    AWS_ACCESS_KEY_ID='<your_access_id>'
+    AWS_SECRET_KEY='<your_access_key>'
+
+    # Create an s3 connection
+    conn = S3(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY)
+    
+    # Sync a local directory and S3 bucket name
+    conn.sync_local_dir_to_bucket('/my/local/dir', 's3-bucket-name') 
+    
+    """
+    
     def __init__(self, AWS_ACCESS_KEY_ID, AWS_SECRET_KEY):
         if not AWS_ACCESS_KEY_ID or not AWS_SECRET_KEY:
             sys.exit("You must provide an AWS access key and id to connect to S3.") 
@@ -33,7 +48,15 @@ class S3(object):
         Required arguments are the full path to a local directory, and the 
         name of an S3 bucket.
         """
-        bucket = self.conn.get_bucket(bucket_name)
+        try:
+            bucket = self.conn.get_bucket(bucket_name)
+        except boto.exception.S3ResponseError, e:
+            sys.exit("""
+                    An error occurred retrieving the S3 bucket named '%s' 
+                    Are you sure the bucket exists and you spelled it correctly?
+                    Below is full error response from S3:\n\n %s
+                    """ % (bucket_name, e))
+
         keys = self.get_s3_filenames(bucket)
         base_path, local_files = self.get_local_filenames(directory)
 
@@ -50,6 +73,7 @@ class S3(object):
             target_file = os.path.join(base_path, fname) 
             print "Uploading %s to S3 bucket %s" % (target_file, bucket_name)
             key.set_contents_from_filename(target_file, cb=percent_cb, num_cb=10) 
+            print
 
 
     def get_s3_filenames(self, bucket):
