@@ -80,7 +80,6 @@ class S3(object):
         """Returns all keys for a bucket. Requires a bucket instance."""
         return set([key.name for key in bucket.list()])
 
-
     def get_local_filenames(self, directory):
         """
         Returns a tuple containing the path to a directory 
@@ -99,14 +98,14 @@ class S3(object):
         """
         files = set([])
         
-        base_path, slash, toplevel_path = directory.rpartition('/')
+        base = os.path.dirname(directory.rstrip('/'))
 
         for dirpath, dirnames, filenames in os.walk(directory):
             # S3 has no concept of directories. To preserve directory structure of files
-            # inside some toplevel directory, we must strip the base path from file paths.
-            path = dirpath.split(base_path + '/')[-1]
+            # inside some toplevel directory, we strip the base path from filenames.
+            path = dirpath.split(base + '/')[-1]
             for filename in filenames:
                 files.add(os.path.join(path, filename))
 
-        return base_path, files
+        return base, files
         
