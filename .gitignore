@@ -5,3 +5,4 @@ sendmail*
 wiki*
 tags
 aws/credentials/*.py
+aws_credentials.py
