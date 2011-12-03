@@ -1,5 +1,7 @@
 *.~
 *.pyc
+*.swp
 sendmail*
 wiki*
 tags
+aws/credentials/*.py
