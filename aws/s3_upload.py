@@ -12,7 +12,11 @@ USAGE:
 import os
 import sys
 
-from utils.aws.s3 import S3
+try:
+    from utils.aws.s3 import S3
+except ImportError:
+    sys.exit("ImportError: S3 could not be imported from utils.aws.s3."
+             " Please ensure 'utils' is on your PYTHONPATH")
 
 
 def main():
@@ -38,12 +42,14 @@ def main():
             "\n\tYou must create this module with these variables and place it in the same directory"
             "\n\tas the s3_upload.py script.\n"
         )
-    
+    s3conn = S3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+
     # PROMPT USER TO CHOOSE A TARGET S3 BUCKET
-    buckets = conn.get_all_buckets()
+    buckets = s3conn.conn.get_all_buckets()
     buckets_lkup = dict(zip(xrange(1, len(buckets) + 1), buckets))
     bucket_choice_prompt = "\nPlease select the number of the target bucket:\n\n"
     bucket_names = "\n".join(["\t(%s) %s" % (key, bckt.name) 
+                              for key, bckt in sorted(buckets_lkup.items())])
 
     while True:
         try:
@@ -57,8 +63,7 @@ def main():
             sys.exit("\nExiting...")
  
     # SYNC LOCAL DIR TO S3
-    conn = S3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-    conn.sync_local_dir_to_bucket(local_directory, bucket_name)
+    s3conn.sync_local_dir_to_bucket(local_directory, bucket_name)
 
 if __name__ == '__main__':
     main()
