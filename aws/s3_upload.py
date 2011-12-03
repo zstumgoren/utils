@@ -9,7 +9,6 @@ USAGE:
 
 """
 import os
-import pprint
 import sys
 
 from boto.s3.connection import S3Connection
